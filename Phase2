@@ -1,0 +1,68 @@
+SQL Table Creation (SQLite)
+sql
+CREATE TABLE IF NOT EXISTS Users (
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    email TEXT,
+    role TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Items (
+    item_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    description TEXT,
+    price REAL
+);
+
+CREATE TABLE IF NOT EXISTS Orders (
+    order_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    order_date TEXT,
+    total REAL,
+    FOREIGN KEY(user_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS OrderItems (
+    order_id INTEGER,
+    item_id INTEGER,
+    quantity INTEGER,
+    FOREIGN KEY(order_id) REFERENCES Orders(order_id),
+    FOREIGN KEY(item_id) REFERENCES Items(item_id)
+);
+
+Java Implementation (JDBC)
+Database Connection
+java
+Connection conn = DriverManager.getConnection("jdbc:sqlite:project.db");
+
+Creating Tables in Java
+java
+Statement stmt = conn.createStatement();
+stmt.execute("CREATE TABLE IF NOT EXISTS Users (user_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT, role TEXT)");
+stmt.execute("CREATE TABLE IF NOT EXISTS Items (item_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, description TEXT, price REAL)");
+stmt.execute("CREATE TABLE IF NOT EXISTS Orders (order_id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, order_date TEXT, total REAL, FOREIGN KEY(user_id) REFERENCES Users(user_id))");
+stmt.execute("CREATE TABLE IF NOT EXISTS OrderItems (order_id INTEGER, item_id INTEGER, quantity INTEGER, FOREIGN KEY(order_id) REFERENCES Orders(order_id), FOREIGN KEY(item_id) REFERENCES Items(item_id))");
+
+CRUD Operation Examples
+Insert Example
+java
+PreparedStatement ps = conn.prepareStatement(
+    "INSERT INTO Users(name, email, role) VALUES (?, ?, ?)");
+ps.setString(1, "John");
+ps.setString(2, "john@example.com");
+ps.setString(3, "customer");
+ps.executeUpdate();
+
+Read Example
+java
+ResultSet rs = stmt.executeQuery("SELECT * FROM Users");
+
+Update Example
+java
+PreparedStatement ps = conn.prepareStatement(
+    "UPDATE Users SET email=? WHERE user_id=?");
+
+Delete Example
+java
+PreparedStatement ps = conn.prepareStatement(
+    "DELETE FROM Users WHERE user_id=
